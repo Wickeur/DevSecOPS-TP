@@ -1,0 +1,37 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: Run PHPUnit tests
+      run: vendor/bin/phpunit
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build and test application
+      run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build --exit-code-from api
+      
+

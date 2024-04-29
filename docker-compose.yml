@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./API
+    ports:
+      - "3000:80"
+    networks:
+      - internal_network
+    volumes:
+      - ./API/src:/var/www/html
+
+  apache:
+    image: php:7.4-apache
+    volumes:
+      - ./apache/apache.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - "3001:80"
+    depends_on:
+      - api
+    networks:
+      - internal_network
+
+networks:
+  internal_network:
